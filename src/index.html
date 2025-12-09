@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="es" ng-app="tutorialApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial AngularJS - UNIR</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:wght@700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body ng-controller="MainController as vm">
+    <!-- 
+        Buenas prácticas aplicadas:
+        - Sintaxis controllerAs (vm = ViewModel)
+        - Separación de archivos por responsabilidad
+        - Directivas semánticas
+    -->
+
+    <!-- Navegación Lateral -->
+    <nav class="sidebar" ng-class="{'collapsed': vm.isSidebarCollapsed()}">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">A</span>
+                <span class="logo-text" ng-hide="vm.isSidebarCollapsed()">ngularJS</span>
+            </div>
+            <button class="toggle-btn" ng-click="vm.toggleSidebar()">
+                <span ng-show="!vm.isSidebarCollapsed()">◀</span>
+                <span ng-show="vm.isSidebarCollapsed()">▶</span>
+            </button>
+        </div>
+        
+        <ul class="nav-menu">
+            <li ng-repeat="item in vm.menuItems" 
+                ng-class="{'active': vm.getCurrentSection() === item.id}"
+                ng-click="vm.navigateTo(item.id)">
+                <span class="nav-icon">{{ item.icon }}</span>
+                <span class="nav-text" ng-hide="vm.isSidebarCollapsed()">{{ item.title }}</span>
+            </li>
+        </ul>
+        
+        <div class="sidebar-footer" ng-hide="vm.isSidebarCollapsed()">
+            <p>UNIR - Actividad 2</p>
+            <p class="version">AngularJS {{ vm.angularVersion }}</p>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="main-content" ng-class="{'expanded': vm.isSidebarCollapsed()}">
+        <header class="content-header">
+            <h1>{{ vm.getCurrentTitle() }}</h1>
+            <div class="progress-bar">
+                <div class="progress-fill" ng-style="{'width': vm.getProgress() + '%'}"></div>
+            </div>
+            <span class="progress-text">{{ vm.getProgress() }}% completado</span>
+        </header>
+
+        <div class="content-body">
+            <!-- Sección: Introducción -->
+            <section ng-show="vm.getCurrentSection() === 'intro'" class="section-content fade-in">
+                <div class="hero-section">
+                    <div class="hero-badge">Tutorial Interactivo</div>
+                    <h2>Bienvenido al Tutorial de <span class="highlight">AngularJS</span></h2>
+                    <p class="hero-subtitle">Un framework JavaScript desarrollado por Google para crear aplicaciones web dinámicas y de una sola página (SPA).</p>
+                </div>
+                
+                <div class="info-cards">
+                    <div class="info-card">
+                        <span class="card-icon">📚</span>
+                        <h3>Aprenderás</h3>
+                        <p>Los fundamentos de AngularJS, desde la instalación hasta la creación de aplicaciones completas.</p>
+                    </div>
+                    <div class="info-card">
+                        <span class="card-icon">⚡</span>
+                        <h3>Interactivo</h3>
+                        <p>Ejemplos prácticos que puedes modificar y ver los resultados en tiempo real.</p>
+                    </div>
+                    <div class="info-card">
+                        <span class="card-icon">🎯</span>
+                        <h3>Práctico</h3>
+                        <p>Este mismo tutorial está construido con AngularJS como demostración del framework.</p>
+                    </div>
+                </div>
+
+                <div class="cta-section">
+                    <button class="btn-primary" ng-click="vm.navigateTo('justificacion')">
+                        Comenzar Tutorial →
+                    </button>
+                </div>
+            </section>
+
+            <!-- Sección: Justificación -->
+            <section ng-show="vm.getCurrentSection() === 'justificacion'" class="section-content fade-in">
+                <h2>Justificación del Framework</h2>
+                
+                <div class="subsection">
+                    <h3><span class="question-icon">❓</span> ¿Qué es AngularJS?</h3>
+                    <p>AngularJS es un <strong>framework de JavaScript de código abierto</strong> mantenido por Google y una comunidad de desarrolladores. Fue lanzado en 2010 y revolucionó el desarrollo web frontend al introducir el concepto de <strong>data binding bidireccional</strong> y la arquitectura <strong>MVC (Modelo-Vista-Controlador)</strong> en el navegador.</p>
+                    
+                    <div class="note-box">
+                        <span class="note-icon">📌</span>
+                        <p><strong>Nota importante:</strong> AngularJS (versión 1.x) es diferente de Angular (versiones 2+). Este tutorial se centra en AngularJS 1.8.3, la última versión estable del framework original.</p>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3><span class="question-icon">🎯</span> ¿Para qué sirve?</h3>
+                    <ul class="feature-list">
+                        <li><span class="check">✓</span> Crear aplicaciones web de una sola página (SPA - Single Page Applications)</li>
+                        <li><span class="check">✓</span> Desarrollar interfaces de usuario dinámicas e interactivas</li>
+                        <li><span class="check">✓</span> Implementar el patrón MVC en aplicaciones frontend</li>
+                        <li><span class="check">✓</span> Gestionar el DOM de forma declarativa</li>
+                        <li><span class="check">✓</span> Realizar peticiones HTTP a APIs REST</li>
+                        <li><span class="check">✓</span> Validar formularios de manera eficiente</li>
+                    </ul>
+                </div>
+
+                <div class="subsection">
+                    <h3><span class="question-icon">🏢</span> ¿Qué aplicaciones tiene?</h3>
+                    <div class="applications-grid">
+                        <div class="app-card">
+                            <h4>Dashboards</h4>
+                            <p>Paneles de control empresariales con datos en tiempo real</p>
+                        </div>
+                        <div class="app-card">
+                            <h4>E-commerce</h4>
+                            <p>Tiendas online con carritos de compra dinámicos</p>
+                        </div>
+                        <div class="app-card">
+                            <h4>CRM/ERP</h4>
+                            <p>Sistemas de gestión empresarial</p>
+                        </div>
+                        <div class="app-card">
+                            <h4>Portales</h4>
+                            <p>Intranets y portales corporativos</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3><span class="question-icon">💻</span> ¿Sobre qué lenguajes se apoya?</h3>
+                    <div class="tech-stack">
+                        <div class="tech-item">
+                            <span class="tech-badge js">JS</span>
+                            <div>
+                                <h4>JavaScript</h4>
+                                <p>Lenguaje principal del framework</p>
+                            </div>
+                        </div>
+                        <div class="tech-item">
+                            <span class="tech-badge html">HTML</span>
+                            <div>
+                                <h4>HTML5</h4>
+                                <p>Plantillas y directivas</p>
+                            </div>
+                        </div>
+                        <div class="tech-item">
+                            <span class="tech-badge css">CSS</span>
+                            <div>
+                                <h4>CSS3</h4>
+                                <p>Estilos y animaciones</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3><span class="question-icon">📋</span> ¿Qué prerrequisitos necesita?</h3>
+                    <div class="prerequisites">
+                        <div class="prereq-item">
+                            <span class="prereq-level easy">Básico</span>
+                            <h4>HTML y CSS</h4>
+                            <p>Conocimientos básicos de estructura y estilos web</p>
+                        </div>
+                        <div class="prereq-item">
+                            <span class="prereq-level medium">Intermedio</span>
+                            <h4>JavaScript</h4>
+                            <p>Variables, funciones, objetos, arrays, callbacks</p>
+                        </div>
+                        <div class="prereq-item">
+                            <span class="prereq-level easy">Básico</span>
+                            <h4>DOM</h4>
+                            <p>Comprensión del Document Object Model</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn-secondary" ng-click="vm.navigateTo('intro')">← Anterior</button>
+                    <button class="btn-primary" ng-click="vm.navigateTo('instalacion')">Siguiente →</button>
+                </div>
+            </section>
+
+            <!-- Sección: Instalación -->
+            <section ng-show="vm.getCurrentSection() === 'instalacion'" class="section-content fade-in">
+                <h2>Instalación</h2>
+                
+                <div class="subsection">
+                    <h3><span class="question-icon">❓</span> ¿Se precisa instalación?</h3>
+                    <p>AngularJS es muy flexible en cuanto a su instalación. <strong>No requiere instalación en el sistema operativo</strong> ya que es una librería JavaScript que se ejecuta directamente en el navegador. Existen varias formas de incluirlo en tu proyecto:</p>
+                </div>
+
+                <div class="subsection">
+                    <h3><span class="question-icon">📦</span> Método 1: CDN (Más Sencillo)</h3>
+                    <p>La forma más rápida es incluir AngularJS directamente desde un CDN:</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>HTML</span>
+                            <button class="copy-btn" ng-click="vm.copyCode('cdn')">Copiar</button>
+                        </div>
+                        <pre><code>&lt;!-- Google CDN --&gt;
+&lt;script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- También disponible en cdnjs --&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"&gt;&lt;/script&gt;</code></pre>
+                    </div>
+                    <div class="tip-box">
+                        <span class="tip-icon">💡</span>
+                        <p><strong>Ventaja:</strong> No necesitas descargar nada. Ideal para prototipos y aprendizaje.</p>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3><span class="question-icon">📦</span> Método 2: NPM (Recomendado para proyectos)</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>Terminal</span>
+                            <button class="copy-btn" ng-click="vm.copyCode('npm')">Copiar</button>
+                        </div>
+                        <pre><code># Inicializar proyecto
+npm init -y
+
+# Instalar AngularJS
+npm install angular@1.8.3
+
+# Instalar servidor de desarrollo
+npm install --save-dev http-server</code></pre>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3><span class="question-icon">📁</span> Estructura de carpetas recomendada</h3>
+                    <div class="folder-structure">
+                        <div class="folder">
+                            <span class="folder-icon">📁</span> mi-proyecto-angularjs/
+                            <div class="folder-content">
+                                <div class="file"><span class="file-icon">📄</span> package.json</div>
+                                <div class="folder">
+                                    <span class="folder-icon">📁</span> src/
+                                    <div class="folder-content">
+                                        <div class="file"><span class="file-icon">📄</span> index.html</div>
+                                        <div class="file"><span class="file-icon">📄</span> styles.css</div>
+                                        <div class="folder">
+                                            <span class="folder-icon">📁</span> app/
+                                            <div class="folder-content">
+                                                <div class="file"><span class="file-icon">📄</span> app.module.js</div>
+                                                <div class="file"><span class="file-icon">📄</span> app.constants.js</div>
+                                                <div class="folder"><span class="folder-icon">📁</span> controllers/</div>
+                                                <div class="folder"><span class="folder-icon">📁</span> services/</div>
+                                                <div class="folder"><span class="folder-icon">📁</span> directives/</div>
+                                                <div class="folder"><span class="folder-icon">📁</span> filters/</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3><span class="question-icon">⚙️</span> Versiones necesarias</h3>
+                    <table class="versions-table">
+                        <thead>
+                            <tr>
+                                <th>Componente</th>
+                                <th>Versión Recomendada</th>
+                                <th>Notas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>AngularJS</td>
+                                <td><span class="version-badge">1.8.3</span></td>
+                                <td>Última versión estable (LTS)</td>
+                            </tr>
+                            <tr>
+                                <td>Node.js</td>
+                                <td><span class="version-badge">14+</span></td>
+                                <td>Para herramientas de desarrollo</td>
+                            </tr>
+                            <tr>
+                                <td>Navegador</td>
+                                <td><span class="version-badge">Moderno</span></td>
+                                <td>Chrome, Firefox, Safari, Edge</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="subsection">
+                    <h3><span class="question-icon">🔧</span> Variables de entorno</h3>
+                    <p>AngularJS <strong>no requiere variables de entorno</strong> para funcionar. Sin embargo, para proyectos más complejos, puedes configurar:</p>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>JavaScript</span>
+                        </div>
+                        <pre><code>// Constantes de configuración en AngularJS (Buena práctica)
+angular.module('miApp')
+    .constant('API_URL', 'https://api.ejemplo.com')
+    .constant('DEBUG_MODE', true);</code></pre>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3><span class="question-icon">🗄️</span> ¿Necesita base de datos?</h3>
+                    <p><strong>No.</strong> AngularJS es un framework de frontend. Se ejecuta completamente en el navegador del cliente. Sin embargo, puede comunicarse con backends que sí utilicen bases de datos mediante:</p>
+                    <ul class="feature-list">
+                        <li><span class="check">✓</span> <code>$http</code> - Servicio para peticiones HTTP/AJAX</li>
+                        <li><span class="check">✓</span> <code>$resource</code> - Servicio para APIs RESTful</li>
+                        <li><span class="check">✓</span> <code>localStorage</code> - Almacenamiento local del navegador</li>
+                    </ul>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn-secondary" ng-click="vm.navigateTo('justificacion')">← Anterior</button>
+                    <button class="btn-primary" ng-click="vm.navigateTo('primeros-pasos')">Siguiente →</button>
+                </div>
+            </section>
+
+            <!-- Sección: Primeros Pasos -->
+            <section ng-show="vm.getCurrentSection() === 'primeros-pasos'" class="section-content fade-in">
+                <h2>Primeros Pasos: Hola Mundo</h2>
+                
+                <div class="subsection">
+                    <h3><span class="question-icon">🚀</span> Tu primera aplicación AngularJS</h3>
+                    <p>Vamos a crear una aplicación "Hola Mundo" paso a paso para entender los conceptos fundamentales:</p>
+                </div>
+
+                <div class="step-guide">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Crear el archivo HTML base</h4>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span>index.html</span>
+                                </div>
+                                <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="es" <span class="highlight-code">ng-app="miApp"</span>&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Mi Primera App AngularJS&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;¡Hola Mundo!&lt;/h1&gt;
+    
+    &lt;script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"&gt;&lt;/script&gt;
+    &lt;script src="app/app.module.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                            </div>
+                            <p class="step-explanation"><code>ng-app="miApp"</code> indica a AngularJS que este elemento y sus hijos forman parte de la aplicación.</p>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Crear el módulo (Buenas prácticas: IIFE + controllerAs)</h4>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span>app/app.module.js</span>
+                                </div>
+                                <pre><code>// IIFE para evitar contaminar el scope global
+(function() {
+    'use strict';
+
+    // Crear el módulo principal
+    angular.module('miApp', []);
+})();</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Crear el controlador (Buenas prácticas)</h4>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span>app/controllers/main.controller.js</span>
+                                </div>
+                                <pre><code>(function() {
+    'use strict';
+
+    angular
+        .module('miApp')
+        .controller('MainController', MainController);
+
+    // Inyección segura para minificación
+    MainController.$inject = [];
+
+    function MainController() {
+        var vm = this; // vm = ViewModel
+        
+        vm.mensaje = '¡Hola Mundo desde AngularJS!';
+        vm.nombre = '';
+    }
+})();</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Conectar usando controllerAs</h4>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span>index.html (actualizado)</span>
+                                </div>
+                                <pre><code>&lt;body <span class="highlight-code">ng-controller="MainController as vm"</span>&gt;
+    &lt;h1&gt;{{ vm.mensaje }}&lt;/h1&gt;
+    
+    &lt;input type="text" <span class="highlight-code">ng-model="vm.nombre"</span> placeholder="Tu nombre"&gt;
+    &lt;p ng-show="vm.nombre"&gt;¡Hola, {{ vm.nombre }}!&lt;/p&gt;
+&lt;/body&gt;</code></pre>
+                            </div>
+                            <p class="step-explanation"><code>controllerAs</code> crea un alias (vm) para acceder a las propiedades del controlador. Es más claro que usar $scope directamente.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3><span class="question-icon">🎮</span> Demo Interactiva</h3>
+                    <p>Prueba el data binding bidireccional de AngularJS:</p>
+                    <div class="demo-box" ng-controller="DemoController as demo">
+                        <div class="demo-input-group">
+                            <label>Escribe tu nombre:</label>
+                            <input type="text" ng-model="demo.nombre" placeholder="Tu nombre aquí...">
+                        </div>
+                        <div class="demo-output">
+                            <p ng-show="demo.nombre" class="demo-greeting">
+                                ¡Hola, <strong>{{ demo.nombre }}</strong>! 👋
+                            </p>
+                            <p ng-hide="demo.nombre" class="demo-placeholder">
+                                El saludo aparecerá aquí cuando escribas...
+                            </p>
+                        </div>
+                        <div class="demo-explanation">
+                            <span class="demo-badge">Two-Way Data Binding</span>
+                            <p>El valor del input se sincroniza automáticamente con <code>demo.nombre</code> en el controlador.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3><span class="question-icon">👁️</span> ¿Cómo visualizar los resultados?</h3>
+                    <div class="visualization-options">
+                        <div class="viz-option">
+                            <h4>Opción 1: Servidor HTTP</h4>
+                            <div class="code-block">
+                                <div class="code-header"><span>Terminal</span></div>
+                                <pre><code># Con npm
+npx http-server src -p 8080 -o
+
+# Se abrirá automáticamente en http://localhost:8080</code></pre>
+                            </div>
+                        </div>
+                        <div class="viz-option">
+                            <h4>Opción 2: Live Server (VS Code)</h4>
+                            <p>Instala la extensión "Live Server" y haz clic derecho en index.html → "Open with Live Server"</p>
+                        </div>
+                        <div class="viz-option">
+                            <h4>Opción 3: Abrir directamente</h4>
+                            <p>Abre el archivo <code>index.html</code> directamente en el navegador (funciona para ejemplos simples sin peticiones HTTP)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn-secondary" ng-click="vm.navigateTo('instalacion')">← Anterior</button>
+                    <button class="btn-primary" ng-click="vm.navigateTo('utilizacion')">Siguiente →</button>
+                </div>
+            </section>
+
+            <!-- Sección: Utilización -->
+            <section ng-show="vm.getCurrentSection() === 'utilizacion'" class="section-content fade-in">
+                <h2>Utilización del Framework</h2>
+                
+                <div class="subsection">
+                    <h3><span class="question-icon">🏗️</span> ¿Cómo empezar una aplicación base?</h3>
+                    <p>Una aplicación AngularJS se compone de varios elementos fundamentales:</p>
+                    
+                    <div class="architecture-diagram">
+                        <div class="arch-component module">
+                            <h4>Módulo</h4>
+                            <p>Contenedor de la aplicación</p>
+                            <code>angular.module('app', [])</code>
+                        </div>
+                        <div class="arch-arrow">↓</div>
+                        <div class="arch-row">
+                            <div class="arch-component controller">
+                                <h4>Controladores</h4>
+                                <p>Lógica de negocio</p>
+                            </div>
+                            <div class="arch-component service">
+                                <h4>Servicios</h4>
+                                <p>Datos compartidos</p>
+                            </div>
+                            <div class="arch-component directive">
+                                <h4>Directivas</h4>
+                                <p>Componentes UI</p>
+                            </div>
+                        </div>
+                        <div class="arch-arrow">↓</div>
+                        <div class="arch-component view">
+                            <h4>Vistas (Templates)</h4>
+                            <p>HTML con directivas AngularJS</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3><span class="question-icon">📝</span> Directivas más importantes</h3>
+                    <div class="directives-grid">
+                        <div class="directive-card">
+                            <code class="directive-name">ng-app</code>
+                            <p>Define el elemento raíz de la aplicación</p>
+                            <span class="directive-example">&lt;html ng-app="miApp"&gt;</span>
+                        </div>
+                        <div class="directive-card">
+                            <code class="directive-name">ng-controller</code>
+                            <p>Asocia un controlador a un elemento</p>
+                            <span class="directive-example">&lt;div ng-controller="MainCtrl as vm"&gt;</span>
+                        </div>
+                        <div class="directive-card">
+                            <code class="directive-name">ng-model</code>
+                            <p>Two-way data binding en inputs</p>
+                            <span class="directive-example">&lt;input ng-model="vm.nombre"&gt;</span>
+                        </div>
+                        <div class="directive-card">
+                            <code class="directive-name">ng-repeat</code>
+                            <p>Itera sobre arrays/objetos</p>
+                            <span class="directive-example">&lt;li ng-repeat="item in vm.items"&gt;</span>
+                        </div>
+                        <div class="directive-card">
+                            <code class="directive-name">ng-click</code>
+                            <p>Maneja eventos de clic</p>
+                            <span class="directive-example">&lt;button ng-click="vm.accion()"&gt;</span>
+                        </div>
+                        <div class="directive-card">
+                            <code class="directive-name">ng-show/ng-hide</code>
+                            <p>Muestra/oculta elementos</p>
+                            <span class="directive-example">&lt;div ng-show="vm.visible"&gt;</span>
+                        </div>
+                        <div class="directive-card">
+                            <code class="directive-name">ng-if</code>
+                            <p>Añade/elimina elementos del DOM</p>
+                            <span class="directive-example">&lt;div ng-if="vm.condicion"&gt;</span>
+                        </div>
+                        <div class="directive-card">
+                            <code class="directive-name">ng-class</code>
+                            <p>Clases CSS dinámicas</p>
+                            <span class="directive-example">&lt;div ng-class="{'active': vm.isActive}"&gt;</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3><span class="question-icon">🎯</span> Ejemplo: Lista de Tareas Interactiva</h3>
+                    <div class="demo-box todo-demo" ng-controller="TodoController as todo">
+                        <h4>📋 Mi Lista de Tareas</h4>
+                        <div class="todo-input">
+                            <input type="text" 
+                                   ng-model="todo.nuevaTarea" 
+                                   ng-keypress="todo.agregarConEnter($event)"
+                                   placeholder="Añadir nueva tarea...">
+                            <button ng-click="todo.agregarTarea()" ng-disabled="!todo.nuevaTarea">+</button>
+                        </div>
+                        <ul class="todo-list">
+                            <li ng-repeat="tarea in todo.tareas" ng-class="{'completada': tarea.completada}">
+                                <input type="checkbox" ng-model="tarea.completada">
+                                <span>{{ tarea.texto }}</span>
+                                <button class="delete-btn" ng-click="todo.eliminarTarea($index)">×</button>
+                            </li>
+                            <li ng-if="todo.tareas.length === 0" class="empty-state">
+                                No hay tareas. ¡Añade una!
+                            </li>
+                        </ul>
+                        <div class="todo-stats" ng-show="todo.tareas.length > 0">
+                            <span>{{ todo.getTareasPendientes() }} pendientes</span>
+                            <span>{{ todo.getTareasCompletadas() }} completadas</span>
+                        </div>
+                    </div>
+                    
+                    <div class="code-block">
+                        <div class="code-header"><span>Código del controlador (Buenas prácticas)</span></div>
+                        <pre><code>(function() {
+    'use strict';
+
+    angular
+        .module('tutorialApp')
+        .controller('TodoController', TodoController);
+
+    function TodoController() {
+        var vm = this;
+
+        // Bindable Members al inicio
+        vm.tareas = [];
+        vm.nuevaTarea = '';
+        vm.agregarTarea = agregarTarea;
+        vm.eliminarTarea = eliminarTarea;
+
+        // Implementación
+        function agregarTarea() {
+            if (vm.nuevaTarea.trim()) {
+                vm.tareas.push({
+                    texto: vm.nuevaTarea,
+                    completada: false
+                });
+                vm.nuevaTarea = '';
+            }
+        }
+
+        function eliminarTarea(index) {
+            vm.tareas.splice(index, 1);
+        }
+    }
+})();</code></pre>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn-secondary" ng-click="vm.navigateTo('primeros-pasos')">← Anterior</button>
+                    <button class="btn-primary" ng-click="vm.navigateTo('funcionamiento')">Siguiente →</button>
+                </div>
+            </section>
+
+            <!-- Sección: Funcionamiento -->
+            <section ng-show="vm.getCurrentSection() === 'funcionamiento'" class="section-content fade-in">
+                <h2>Explicación del Funcionamiento</h2>
+                
+                <div class="subsection">
+                    <h3><span class="question-icon">📄</span> ¿Actúa sobre páginas, ficheros, secciones...?</h3>
+                    <p>AngularJS actúa principalmente a nivel de <strong>elementos HTML</strong> y sus descendientes. Puede controlar:</p>
+                    
+                    <div class="scope-diagram">
+                        <div class="scope-level page">
+                            <span class="scope-label">Página completa</span>
+                            <code>&lt;html ng-app="miApp"&gt;</code>
+                            <p>El módulo controla toda la página</p>
+                        </div>
+                        <div class="scope-level section">
+                            <span class="scope-label">Secciones</span>
+                            <code>&lt;div ng-controller="SeccionCtrl as vm"&gt;</code>
+                            <p>Cada controlador maneja una sección</p>
+                        </div>
+                        <div class="scope-level component">
+                            <span class="scope-label">Componentes</span>
+                            <code>&lt;mi-componente&gt;&lt;/mi-componente&gt;</code>
+                            <p>Directivas personalizadas como componentes</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3><span class="question-icon">✏️</span> ¿Cómo se editan/modifican los ficheros?</h3>
+                    
+                    <div class="file-types">
+                        <div class="file-type">
+                            <div class="file-icon-large html">HTML</div>
+                            <h4>Archivos HTML (Vistas)</h4>
+                            <ul>
+                                <li>Contienen las directivas de AngularJS</li>
+                                <li>Usan expresiones <code>{{ }}</code> para mostrar datos</li>
+                                <li>Se editan como HTML normal</li>
+                            </ul>
+                            <div class="code-block mini">
+                                <pre><code>&lt;div ng-controller="MiCtrl as vm"&gt;
+    &lt;p&gt;Hola, {{ vm.nombre }}&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="file-type">
+                            <div class="file-icon-large js">JS</div>
+                            <h4>Archivos JavaScript</h4>
+                            <ul>
+                                <li>Definen módulos, controladores, servicios</li>
+                                <li>Contienen la lógica de la aplicación</li>
+                                <li>Se organizan por funcionalidad</li>
+                            </ul>
+                            <div class="code-block mini">
+                                <pre><code>// Buena práctica: usar IIFE
+(function() {
+    'use strict';
+    
+    angular
+        .module('miApp')
+        .controller('MiCtrl', MiCtrl);
+
+    function MiCtrl() {
+        var vm = this;
+        vm.nombre = 'Usuario';
+    }
+})();</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3><span class="question-icon">🔗</span> ¿Cómo se referencian los ficheros?</h3>
+                    
+                    <div class="reference-guide">
+                        <div class="ref-item">
+                            <h4>1. Orden de carga de Scripts (Importante)</h4>
+                            <div class="code-block mini">
+                                <pre><code>&lt;!-- 1. Primero AngularJS --&gt;
+&lt;script src="angular.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- 2. Módulo principal --&gt;
+&lt;script src="app/app.module.js"&gt;&lt;/script&gt;
+
+&lt;!-- 3. Constantes y configuración --&gt;
+&lt;script src="app/app.constants.js"&gt;&lt;/script&gt;
+
+&lt;!-- 4. Servicios (antes de controladores) --&gt;
+&lt;script src="app/services/data.service.js"&gt;&lt;/script&gt;
+
+&lt;!-- 5. Controladores --&gt;
+&lt;script src="app/controllers/main.controller.js"&gt;&lt;/script&gt;
+
+&lt;!-- 6. Directivas y filtros --&gt;
+&lt;script src="app/directives/mi-directiva.directive.js"&gt;&lt;/script&gt;</code></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="ref-item">
+                            <h4>2. Inyección de dependencias segura</h4>
+                            <div class="code-block mini">
+                                <pre><code>// Forma segura para minificación
+MiController.$inject = ['$scope', '$http', 'MiServicio'];
+
+function MiController($scope, $http, MiServicio) {
+    // $http y MiServicio disponibles aquí
+}</code></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="ref-item">
+                            <h4>3. Templates externos con ng-include</h4>
+                            <div class="code-block mini">
+                                <pre><code>&lt;!-- Incluir template externo --&gt;
+&lt;div ng-include="'partials/header.html'"&gt;&lt;/div&gt;
+
+&lt;!-- Con variable del controlador --&gt;
+&lt;div ng-include="vm.templateUrl"&gt;&lt;/div&gt;</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3><span class="question-icon">🔄</span> Ciclo de vida de AngularJS</h3>
+                    <div class="lifecycle">
+                        <div class="lifecycle-step">
+                            <span class="step-num">1</span>
+                            <h4>Bootstrap</h4>
+                            <p>AngularJS se carga y encuentra <code>ng-app</code></p>
+                        </div>
+                        <div class="lifecycle-arrow">→</div>
+                        <div class="lifecycle-step">
+                            <span class="step-num">2</span>
+                            <h4>Compilación</h4>
+                            <p>Procesa las directivas en el HTML</p>
+                        </div>
+                        <div class="lifecycle-arrow">→</div>
+                        <div class="lifecycle-step">
+                            <span class="step-num">3</span>
+                            <h4>Linking</h4>
+                            <p>Conecta el scope con el DOM</p>
+                        </div>
+                        <div class="lifecycle-arrow">→</div>
+                        <div class="lifecycle-step">
+                            <span class="step-num">4</span>
+                            <h4>Digest Cycle</h4>
+                            <p>Detecta cambios y actualiza la vista</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn-secondary" ng-click="vm.navigateTo('utilizacion')">← Anterior</button>
+                    <button class="btn-primary" ng-click="vm.navigateTo('conclusiones')">Siguiente →</button>
+                </div>
+            </section>
+
+            <!-- Sección: Conclusiones -->
+            <section ng-show="vm.getCurrentSection() === 'conclusiones'" class="section-content fade-in">
+                <h2>Conclusiones</h2>
+                
+                <div class="conclusion-hero">
+                    <div class="completion-badge">
+                        <span class="badge-icon">🎉</span>
+                        <h3>¡Tutorial Completado!</h3>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3><span class="question-icon">📊</span> Alcance del Tutorial</h3>
+                    <p>En este tutorial hemos cubierto los aspectos fundamentales de AngularJS:</p>
+                    
+                    <div class="achievements">
+                        <div class="achievement" ng-repeat="logro in vm.logros">
+                            <span class="achievement-icon">{{ logro.icon }}</span>
+                            <div class="achievement-content">
+                                <h4>{{ logro.titulo }}</h4>
+                                <p>{{ logro.descripcion }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3><span class="question-icon">✅</span> Objetivos Conseguidos</h3>
+                    <div class="objectives-checklist">
+                        <div class="objective" ng-repeat="objetivo in vm.objetivos">
+                            <span class="objective-check">✓</span>
+                            <span>{{ objetivo }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3><span class="question-icon">⚖️</span> Ventajas y Desventajas</h3>
+                    <div class="pros-cons">
+                        <div class="pros">
+                            <h4>👍 Ventajas</h4>
+                            <ul>
+                                <li>Two-way data binding automático</li>
+                                <li>Inyección de dependencias integrada</li>
+                                <li>Directivas reutilizables</li>
+                                <li>Testabilidad incorporada</li>
+                                <li>Gran comunidad y documentación</li>
+                            </ul>
+                        </div>
+                        <div class="cons">
+                            <h4>👎 Desventajas</h4>
+                            <ul>
+                                <li>Rendimiento en apps muy grandes</li>
+                                <li>Curva de aprendizaje inicial</li>
+                                <li>Fin del soporte oficial (2022)</li>
+                                <li>Migración compleja a Angular 2+</li>
+                                <li>Digest cycle puede ser confuso</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3><span class="question-icon">🚀</span> Próximos Pasos</h3>
+                    <div class="next-steps">
+                        <div class="next-step">
+                            <span class="step-icon">📖</span>
+                            <h4>Profundizar en Directivas</h4>
+                            <p>Crea tus propias directivas personalizadas</p>
+                        </div>
+                        <div class="next-step">
+                            <span class="step-icon">🔌</span>
+                            <h4>Servicios y $http</h4>
+                            <p>Conecta tu app con APIs REST</p>
+                        </div>
+                        <div class="next-step">
+                            <span class="step-icon">🛣️</span>
+                            <h4>Routing con ngRoute</h4>
+                            <p>Crea aplicaciones SPA con múltiples vistas</p>
+                        </div>
+                        <div class="next-step">
+                            <span class="step-icon">🧪</span>
+                            <h4>Testing</h4>
+                            <p>Aprende a testear con Jasmine y Karma</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="final-note">
+                    <div class="note-content">
+                        <h4>📝 Nota Final</h4>
+                        <p>Este tutorial ha sido construido utilizando el propio AngularJS como demostración práctica del framework, <strong>aplicando las buenas prácticas recomendadas</strong>: IIFE, controllerAs, servicios para lógica compartida, y separación de archivos por responsabilidad.</p>
+                        <p class="signature">— Tutorial creado para la Actividad 2 de UNIR</p>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn-secondary" ng-click="vm.navigateTo('funcionamiento')">← Anterior</button>
+                    <button class="btn-primary" ng-click="vm.navigateTo('intro')">🏠 Volver al Inicio</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Scripts: Orden importante -->
+    <!-- 1. Framework -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+    
+    <!-- 2. Módulo principal -->
+    <script src="app/app.module.js"></script>
+    
+    <!-- 3. Constantes y configuración -->
+    <script src="app/app.constants.js"></script>
+    
+    <!-- 4. Servicios -->
+    <script src="app/services/navigation.service.js"></script>
+    <script src="app/services/clipboard.service.js"></script>
+    
+    <!-- 5. Controladores -->
+    <script src="app/controllers/main.controller.js"></script>
+    <script src="app/controllers/demo.controller.js"></script>
+    <script src="app/controllers/todo.controller.js"></script>
+    
+    <!-- 6. Directivas -->
+    <script src="app/directives/highlight-on-hover.directive.js"></script>
+    
+    <!-- 7. Filtros -->
+    <script src="app/filters/capitalizar.filter.js"></script>
+</body>
+</html>

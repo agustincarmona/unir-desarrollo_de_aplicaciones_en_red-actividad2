@@ -1,0 +1,23 @@
+{
+  "name": "angularjs-hola-mundo",
+  "version": "1.0.0",
+  "description": "Proyecto Hola Mundo con AngularJS",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "npx http-server src -p 8080 -o",
+    "serve": "npx http-server src -p 8080"
+  },
+  "keywords": [
+    "angularjs",
+    "hola-mundo"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "angular": "^1.8.3"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
+
